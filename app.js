@@ -55,7 +55,33 @@ app.get('/api/todos', authenticateToken, (req, res) => {
   res.json(todos);
 });
 
+app.get('/api/todos/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  const todo = todos.find(todo => todo.id === id);
+  
+  if (!todo) {
+    return res.status(404).send('El item no existe');
+  }
 
+  res.status(200).json(todo);
+});
+
+app.post('/api/todos', express.json(), authenticateToken, (req, res) => {
+  const { title } = req.body;
+  if (!title) {
+    return res.status(400).send('El título es requerido');
+  }
+
+  const newTodo = {
+    id: randomUUID(),
+    title,
+    completed: false
+  };
+
+  todos.push(newTodo);
+
+  res.status(201).json(newTodo);
+});
 
 // ... hasta aquí
 
