@@ -83,6 +83,32 @@ app.post('/api/todos', express.json(), authenticateToken, (req, res) => {
   res.status(201).json(newTodo);
 });
 
+app.put('/api/todos/:id', express.json(), authenticateToken, (req, res) => {
+  const { id } = req.params;
+  const { title, completed } = req.body;
+
+  const todoIndex = todos.findIndex(todo => todo.id === id);
+  if (todoIndex === -1) return res.sendStatus(404);
+
+  const todo = todos[todoIndex];
+
+  if (title !== undefined) todo.title = title;
+  if (completed !== undefined) todo.completed = completed;
+
+  res.json(todo);
+});
+
+app.delete('/api/todos/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+
+  const todoIndex = todos.findIndex(todo => todo.id === id);
+  if (todoIndex === -1) return res.sendStatus(404);
+
+  todos.splice(todoIndex, 1);
+
+  res.sendStatus(204);
+});
+
 // ... hasta aquí
 
 export default app
