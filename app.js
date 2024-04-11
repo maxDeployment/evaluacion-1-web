@@ -87,6 +87,13 @@ app.put('/api/todos/:id', express.json(), authenticateToken, (req, res) => {
   const { id } = req.params;
   const { title, completed } = req.body;
 
+  if (title !== undefined && typeof title !== 'string') {
+    return res.sendStatus(400);
+  }
+  if (completed !== undefined && typeof completed !== 'boolean') {
+    return res.sendStatus(400);
+  }
+
   const todoIndex = todos.findIndex(todo => todo.id === id);
   if (todoIndex === -1) return res.sendStatus(404);
 
